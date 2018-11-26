@@ -1,1 +1,1 @@
-docker-compose --project-name octopus logs -f -t
+docker-compose --project-name octopus -f .\Tentacle\docker-compose.yml logs -f -t
