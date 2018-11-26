@@ -1,1 +1,4 @@
-docker-compose -f .\Tentacle\docker-compose.yml build 
+docker-compose `
+ -f Tentacle\docker-compose.yml `
+ -f Tentacle\docker-compose.build.yml `
+ build

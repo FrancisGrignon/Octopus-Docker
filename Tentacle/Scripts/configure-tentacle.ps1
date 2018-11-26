@@ -214,7 +214,7 @@ function Register-Tentacle() {
   Execute-Command $TentacleExe $arg;
 }
 
-function Register-Worker(){
+function Register-Worker() {
   Write-Log "Registering Tentacule as a Worker with server ..."
  
    New-Variable -Name arg -Option AllScope

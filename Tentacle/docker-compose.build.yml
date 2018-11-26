@@ -1,0 +1,14 @@
+version: '2.1'
+services:
+  listeningtentacle:
+    build:
+      context: .\
+  #pollingtentacle:
+  #  build:
+  #    context: .
+  #listeningworker:
+  #  build:
+  #    context: .
+  #pollingworker:
+  #  build:
+  #    context: .

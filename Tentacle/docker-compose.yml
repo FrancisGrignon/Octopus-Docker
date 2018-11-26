@@ -38,8 +38,8 @@ services:
       ServerUrl: "http://octopus:81"
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
-      - "../Temp/ListeningApplications:C:/Applications"
-      - "../Temp/ListeningHome:C:/TentacleHome"
+      - "../Temp/ListeningTentaculeApplications:C:/Applications"
+      - "../Temp/ListeningTentaculeHome:C:/TentacleHome"
   pollingtentacle:
     image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
     depends_on:
@@ -54,8 +54,8 @@ services:
       ServerPort: "10943"
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
-      - "../Temp/PollingApplications:C:/Applications"
-      - "../Temp/PollingHome:C:/TentacleHome"
+      - "../Temp/PollingTentaculeApplications:C:/Applications"
+      - "../Temp/PollingTentaculeHome:C:/TentacleHome"
   listeningworker:
     image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
     depends_on:
@@ -68,8 +68,8 @@ services:
       Worker: "yes"
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
-      - "../Temp/ListeningApplications:C:/Applications"
-      - "../Temp/ListeningHome:C:/TentacleHome"
+      - "../Temp/ListeningWorkerApplications:C:/Applications"
+      - "../Temp/ListeningWorkerHome:C:/TentacleHome"
   pollingworker:
     image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
     depends_on:
@@ -83,8 +83,8 @@ services:
       Worker: "yes"
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
-      - "../Temp/PollingApplications:C:/Applications"
-      - "../Temp/PollingHome:C:/TentacleHome"
+      - "../Temp/PollingWorkerApplications:C:/Applications"
+      - "../Temp/PollingWorkerHome:C:/TentacleHome"
 
 networks:
   default:
