@@ -26,13 +26,15 @@ services:
       - "../Testing/Import:C:/Import"
       - "../Testing/Repository:C:/Repository"
   listeningtentacle:
-    image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    #image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    image: grignon/tentacle:latest
     depends_on:
       octopus:
         condition: service_healthy
     environment:
       ServerUsername: "${OCTOPUS_ADMIN_USERNAME}"
       ServerPassword: "${OCTOPUS_ADMIN_PASSWORD}"
+      ServerApiKey: "API-QYW8TIL4MSYZNPYZRI6GFUAKOGK"
       TargetEnvironment: "Development"
       TargetRole: "app-server"
       ServerUrl: "http://octopus:81"
@@ -41,13 +43,15 @@ services:
       - "../Temp/ListeningTentaculeApplications:C:/Applications"
       - "../Temp/ListeningTentaculeHome:C:/TentacleHome"
   pollingtentacle:
-    image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    #image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    image: grignon/tentacle:latest
     depends_on:
       octopus:
         condition: service_healthy
     environment:
       ServerUsername: "${OCTOPUS_ADMIN_USERNAME}"
       ServerPassword: "${OCTOPUS_ADMIN_PASSWORD}"
+      ServerApiKey: "API-QYW8TIL4MSYZNPYZRI6GFUAKOGK"
       TargetEnvironment: "Development"
       TargetRole: "web-server"
       ServerUrl: "http://octopus:81"
@@ -57,30 +61,36 @@ services:
       - "../Temp/PollingTentaculeApplications:C:/Applications"
       - "../Temp/PollingTentaculeHome:C:/TentacleHome"
   listeningworker:
-    image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    #image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    image: grignon/tentacle:latest
     depends_on:
       octopus:
         condition: service_healthy
     environment:
       ServerUsername: "${OCTOPUS_ADMIN_USERNAME}"
       ServerPassword: "${OCTOPUS_ADMIN_PASSWORD}"
+      ServerApiKey: "API-QYW8TIL4MSYZNPYZRI6GFUAKOGK" 
       ServerUrl: "http://octopus:81"
       Worker: "yes"
+      WorkerPoolName: "Default Worker Pool"
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
       - "../Temp/ListeningWorkerApplications:C:/Applications"
       - "../Temp/ListeningWorkerHome:C:/TentacleHome"
   pollingworker:
-    image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    #image: octopusdeploy/tentacle${OCTOPUS_TENTACLE_REPO_SUFFIX}:${TENTACLE_VERSION}
+    image: grignon/tentacle:latest
     depends_on:
       octopus:
         condition: service_healthy
     environment:
       ServerUsername: "${OCTOPUS_ADMIN_USERNAME}"
       ServerPassword: "${OCTOPUS_ADMIN_PASSWORD}"
+      ServerApiKey: "API-QYW8TIL4MSYZNPYZRI6GFUAKOGK"
       ServerUrl: "http://octopus:81"
       ServerPort: "10943"
       Worker: "yes"
+      WorkerPoolName: "Default Worker Pool"      
     stdin_open: true #Process sits and waits for ReadLine
     volumes:
       - "../Temp/PollingWorkerApplications:C:/Applications"

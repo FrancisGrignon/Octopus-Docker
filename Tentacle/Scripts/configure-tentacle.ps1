@@ -17,6 +17,7 @@ $CustomPublicHostName = $env:CustomPublicHostName;
 $InternalListeningPort = 10933;
 $ServerPort = $env:ServerPort;
 $Worker = $env:Worker;
+$WorkerPoolName = $env:WorkerPoolName;
 
 $TentacleExe=$Exe
 function Configure-Tentacle
@@ -125,14 +126,22 @@ function Validate-Variables() {
     exit 1;
   }
 
-  if($TargetEnvironment -eq $null) {
-    Write-Error "Missing 'TargetEnvironment' environment variable"
-    exit 1;
+  if (($Worker)) {
+    if($WorkerPoolName -eq $null) {
+      Write-Error "Missing 'WorkerPoolName' environment variable"
+      exit 1;
+    }  
   }
+  else {
+    if($TargetEnvironment -eq $null) {
+      Write-Error "Missing 'TargetEnvironment' environment variable"
+      exit 1;
+    }
 
-  if($TargetRole -eq $null) {
-    Write-Error "Missing 'TargetRole' environment variable"
-    exit 1;
+    if($TargetRole -eq $null) {
+      Write-Error "Missing 'TargetRole' environment variable"
+      exit 1;
+    }
   }
 
   if($PublicHostNameConfiguration -eq $null) {
@@ -154,10 +163,17 @@ function Validate-Variables() {
   if($TargetName -ne $null) {
     Write-Log " - name '$TargetName'"
   }
+  if($Worker -ne $null) {
+    Write-Log " - worker enable"
+
+    if($WorkerPoolName -ne $null) {
+      Write-Log " - worker pool name '$WorkerPoolName'"
+    }  
+  }
 }
 
 function Register-Tentacle() {
- Write-Log "Registering Tentacule with server ..."
+  Write-Log "Registering Tentacule with server ..."
 
   New-Variable -Name arg -Option AllScope
   $arg = @(
@@ -215,15 +231,21 @@ function Register-Tentacle() {
 }
 
 function Register-Worker() {
-  Write-Log "Registering Tentacule as a Worker with server ..."
- 
+   Write-Log "Registering Tentacule as a Worker with server ..."
+
    New-Variable -Name arg -Option AllScope
+
+   if ($WorkerPoolName -eq $null) {
+      $WorkerPoolName = "Default Worker Pool"
+   }
+
    $arg = @(
      'register-worker',
      '--console',
      '--instance', 'Tentacle',
      '--server', $ServerUrl,
-     '--force')
+     '--force',
+     '--workerpool', $WorkerPoolName)
  
    if ($null -ne $ServerPort) {
      $arg += "--comms-style"

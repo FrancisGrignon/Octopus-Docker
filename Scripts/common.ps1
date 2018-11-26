@@ -1,3 +1,5 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
+
 if ($Installer -eq "Octopus.Server") {
   $Exe="C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe"
   $Version=$env:OctopusVersion
