@@ -10,12 +10,13 @@ $ServerPassword = $env:ServerPassword;
 $ServerUrl = $env:ServerUrl;
 $TargetEnvironment = $env:TargetEnvironment;
 $TargetRole = $env:TargetRole;
-$TargetName=$env:TargetName;
-$ListeningPort=$env:ListeningPort;
-$PublicHostNameConfiguration=$env:PublicHostNameConfiguration;
-$CustomPublicHostName=$env:CustomPublicHostName;
-$InternalListeningPort=10933;
-$ServerPort=$env:ServerPort;
+$TargetName = $env:TargetName;
+$ListeningPort = $env:ListeningPort;
+$PublicHostNameConfiguration = $env:PublicHostNameConfiguration;
+$CustomPublicHostName = $env:CustomPublicHostName;
+$InternalListeningPort = 10933;
+$ServerPort = $env:ServerPort;
+$Worker = $env:Worker;
 
 $TentacleExe=$Exe
 function Configure-Tentacle
@@ -150,13 +151,13 @@ function Validate-Variables() {
   Write-Log " - environment '$TargetEnvironment'"
   Write-Log " - role '$TargetRole'"
   Write-Log " - host '$PublicHostNameConfiguration'"
-  if($env:TargetName -ne $null) {
-    Write-Log " - name '$env:TargetName'"
+  if($TargetName -ne $null) {
+    Write-Log " - name '$TargetName'"
   }
 }
 
-function Register-Tentacle(){
- Write-Log "Registering with server ..."
+function Register-Tentacle() {
+ Write-Log "Registering Tentacule with server ..."
 
   New-Variable -Name arg -Option AllScope
   $arg = @(
@@ -195,9 +196,9 @@ function Register-Tentacle(){
     $arg += $ServerPassword
   }
 
-  if($env:TargetName -ne $null) {
+  if($TargetName -ne $null) {
     $arg += "--name";
-    $arg += $env:TargetName;
+    $arg += $TargetName;
   }
 
   $TargetEnvironment.Split(",") | ForEach {
@@ -213,6 +214,54 @@ function Register-Tentacle(){
   Execute-Command $TentacleExe $arg;
 }
 
+function Register-Worker(){
+  Write-Log "Registering Tentacule as a Worker with server ..."
+ 
+   New-Variable -Name arg -Option AllScope
+   $arg = @(
+     'register-worker',
+     '--console',
+     '--instance', 'Tentacle',
+     '--server', $ServerUrl,
+     '--force')
+ 
+   if ($null -ne $ServerPort) {
+     $arg += "--comms-style"
+     $arg += "TentacleActive"
+     $arg += "--server-comms-port"
+     $arg += $ServerPort
+   } else {
+     $arg += "--comms-style"
+     $arg += "TentaclePassive"
+     $publicHostName = Get-PublicHostName $PublicHostNameConfiguration;
+     $arg += "--publicHostName"
+     $arg += $publicHostName
+     if (($null -ne $ListeningPort) -and ($ListeningPort -ne $InternalListeningPort)) {
+       $arg += "--tentacle-comms-port"
+       $arg += $ListeningPort
+     }
+   }
+ 
+   if(!($ServerApiKey -eq $null)) {
+     Write-Verbose "Registering Tentacule with api key"
+     $arg += "--apiKey";
+     $arg += $ServerApiKey
+   } else {
+     Write-Verbose "Registering Tentacule with username/password"
+     $arg += "--username";
+     $arg += $ServerUsername
+     $arg += "--password";
+     $arg += $ServerPassword
+   }
+ 
+   if($TargetName -ne $null) {
+     $arg += "--name";
+     $arg += $TargetName;
+   }
+ 
+   Execute-Command $TentacleExe $arg;
+ }
+
 try
 {
   Write-Log "==============================================="
@@ -227,7 +276,14 @@ try
   Write-Log "==============================================="
 
   Configure-Tentacle
-  Register-Tentacle
+
+  if ($Worker) {
+    Register-Worker
+  }
+  else {
+    Register-Tentacle  
+  }
+  
   "Configuration complete." | Set-Content "c:\octopus-configuration.initstate"
 
   Write-Log "Configuration successful."

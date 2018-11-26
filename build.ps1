@@ -1,0 +1,1 @@
+docker-compose -f .\Tentacle\docker-compose.yml build 

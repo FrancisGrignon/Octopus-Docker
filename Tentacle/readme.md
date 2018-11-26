@@ -53,6 +53,7 @@ docker run --publish 10931:10933 --tty --interactive --env "ListeningPort=10931"
 - **ListeningPort**: The port that the Octopus Server will connect back to the Tentacle with. Defaults to 10933. Implies a listening Tentacle.
 - **PublicHostNameConfiguration**: How the url that the Octopus server will use to communicate with the Tentacle is determined. Can be `PublicIp`, `FQDN`, `ComputerName` or `Custom`. Defaults to `PublicIp`.
 - **CustomPublicHostName**: If `PublicHostNameConfiguration` is set to `Custom`, the host name that the Octopus Server should use to communicate with the Tentacle.
+- **Worker**: If set, the Tentacule will run as a working. TargetEnvironment and TargetRole environment variables will be ignored.
 
 ### Ports
 

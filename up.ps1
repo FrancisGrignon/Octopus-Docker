@@ -1,0 +1,1 @@
+docker-compose --project-name Octopus -f .\Tentacle\docker-compose.yml up -d --force-recreate -d
